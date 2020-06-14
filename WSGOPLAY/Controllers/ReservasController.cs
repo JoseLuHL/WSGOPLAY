@@ -24,7 +24,7 @@ namespace WSGOPLAY.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reserva>>> GetReserva()
         {
-            return await _context.Reserva.Include(s=> s.IdhorarioNavigation).ToListAsync();
+            return await _context.Reserva.ToListAsync();
         }
 
         // GET: api/Reservas/5

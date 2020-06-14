@@ -24,7 +24,7 @@ namespace WSGOPLAY
         {
             Configuration = configuration;
         }
-
+        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -61,11 +61,13 @@ namespace WSGOPLAY
             );
 
 
-            var connectionString1 = this.Configuration["ConnectionStrings:DefaultConnection1"];
+            var connectionString1 = this.Configuration["ConnectionStrings:DefaultConnection"];
+
+           
+
             services.AddDbContextPool<goplayco_redContext>(options => options
-                .UseMySql(connectionString1, mySqlOptions => mySqlOptions
-                    .ServerVersion(new Version(8, 0, 18), ServerType.MySql)
-            )); 
+                .UseMySql(connectionString1)
+            ); 
             
            
         }

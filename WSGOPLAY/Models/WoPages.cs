@@ -45,7 +45,7 @@ namespace WSGOPLAY.Models
         public string Boosted { get; set; }
         public double? Lat { get; set; }
         public double? Lng { get; set; }
-
+        
         public virtual ICollection<Horario> Horario { get; set; }
     }
 }

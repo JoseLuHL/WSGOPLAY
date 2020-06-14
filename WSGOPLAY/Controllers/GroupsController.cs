@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSGOPLAY.Models;
+using EpaycoSdk;
+using EpaycoSdk.Models;
+using System.Net;
 
 namespace WSGOPLAY.Controllers
 {
@@ -17,6 +20,8 @@ namespace WSGOPLAY.Controllers
 
         public GroupsController(goplayco_redContext context)
         {
+           
+
             _context = context;
         }
 
@@ -24,7 +29,15 @@ namespace WSGOPLAY.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<WoGroups>>> GetWoGroups()
         {
-            return await _context.WoGroups.ToListAsync();
+            try
+            {
+                return await _context.WoGroups.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex);
+                //throw;
+            }
         }
 
         // GET: api/Groups/5
