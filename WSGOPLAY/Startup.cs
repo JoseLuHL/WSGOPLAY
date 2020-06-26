@@ -31,7 +31,7 @@ namespace WSGOPLAY
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            services.AddCors();
             // REGISTRAMOS SWAGGER COMO SERVICIO
             services.AddOpenApiDocument(document =>
             {
@@ -79,15 +79,27 @@ namespace WSGOPLAY
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
+            app.UseCors("CorsPolicy");
+
+
             app.UseHttpsRedirection();
+
             app.UseRouting();
+            app.UseRouting();
+
+            app.UseCors(
+                options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+            );
+
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
-            // AÑADIMOS EL MIDDLEWARE DE SWAGGER (NSwag)
+            // 
             app.UseOpenApi();
             app.UseSwaggerUi3();
         }
