@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using WSGOPLAY.Models;
+//using Microsoft.AspNetCore.Mvc.Cors.Internal;
+//using Portfolio.API.Middleware;
 
 namespace WSGOPLAY
 {
@@ -31,7 +26,15 @@ namespace WSGOPLAY
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            //services.AddCors();
+
+            // Add framework services.
+            services.AddMvc();
+            services.AddLogging();
             services.AddCors();
+
+            
+
             // REGISTRAMOS SWAGGER COMO SERVICIO
             services.AddOpenApiDocument(document =>
             {
@@ -54,17 +57,13 @@ namespace WSGOPLAY
                     new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-
-
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
-
             var connectionString1 = this.Configuration["ConnectionStrings:DefaultConnection"];
 
-           
-
+         
             services.AddDbContextPool<goplayco_redContext>(options => options
                 .UseMySql(connectionString1)
             ); 
@@ -81,8 +80,14 @@ namespace WSGOPLAY
             }
 
 
-            app.UseCors("CorsPolicy");
+            
 
+
+            app.UseCors(
+                options => options.AllowAnyOrigin()//.WithOrigins("http://localhost:3000")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
 
             app.UseHttpsRedirection();
 
