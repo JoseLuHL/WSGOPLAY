@@ -1,10 +1,12 @@
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using WSGOPLAY.Models;
@@ -57,18 +59,18 @@ namespace WSGOPLAY
                     new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-            services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            //services.AddControllers().AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //);
 
             var connectionString1 = this.Configuration["ConnectionStrings:DefaultConnection"];
 
          
             services.AddDbContextPool<goplayco_redContext>(options => options
                 .UseMySql(connectionString1)
-            ); 
+            );
             
-           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

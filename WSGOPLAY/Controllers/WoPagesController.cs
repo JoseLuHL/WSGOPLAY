@@ -106,18 +106,44 @@ namespace WSGOPLAY.Controllers
 
         }
 
-        [HttpGet("pagina/horario/{id}")]
-        public async Task<ActionResult<WoPages>> GetWoPageshorario(int id =1)
+        [HttpGet("pagina/horario/{id}/{fecha}")]
+        public async Task<ActionResult<WoPages>> GetWoPageshorario(string fecha = "01/01/2020", int id = 1)
         {
-            var PG = await _context.WoPages
-                            .Include(horario=> horario.Horario)
-                                .ThenInclude(s=> s.Sinreserva)
-                            .Include(horario => horario.Horario)
-                                .ThenInclude(Horario  => Horario.Reserva)
-                                    .ThenInclude(est => est.IdestadoNavigation)
-                                    .Where(s=>s.PageId.Equals(id)).FirstAsync();
+            try
+            {
+                //fecha = DateTime.Now.ToShortDateString();
+                var PG = await _context.WoPages
+                                .Include(horario => horario.Horario.Where(s => s.ProPrecio.Contains("5000"))).ToListAsync();
 
-            return PG;
+                //var cancha = _context.WoPages.Where(s => s.PageId.Equals(id));
+                //var horario = _context.Horario.Where(s => s.IdCancha.Equals(id));
+                //var sinreserva = _context.Sinreserva.Where(s => s.Sinidhorario.Equals(id));
+                //    var filteredBlogs = context.Blogs
+                //.Include(blog => blog.Posts.Where(post => post.BlogId == 1))
+                //    .ThenInclude(post => post.Author)
+                //.Include(blog => blog.Posts)
+                //    .ThenInclude(post => post.Tags.OrderBy(postTag => postTag.TagId).Skip(3))
+                //.ToList();
+                //var datos = await (from r in _context.Reserva 
+                //                   join ho in _context.Horario on r.Idhorario equals ho.Id
+                //                   join c in _context.WoPages on ho.IdCancha equals c.PageId
+                //                   where r.IdhorarioNavigation.IdCancha == id
+                //                   select new
+                //                   {
+                //                       c
+                //                   }
+                //                   ).ToListAsync();
+                if (PG == null)
+                {
+                    return null;
+                }
+                return Ok(PG);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+      
         }
 
         // GET: api/WoPages/5

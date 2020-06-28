@@ -24,7 +24,7 @@ namespace WSGOPLAY.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Horario>>> GetHorario()
         {
-            return await _context.Horario.Include(s=>s.IdCanchaNavigation).ToListAsync();
+            return await _context.Horario.Include(s=>s.Reserva.Where(w => w.Idestado>=5)).ToListAsync();
         }
 
         // GET: api/Horarios/5

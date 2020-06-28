@@ -7,7 +7,7 @@ namespace WSGOPLAY.Models
     {
         public EstadoCancha()
         {
-            Reserva = new HashSet<Reserva>();
+            //Reserva = new HashSet<Reserva>();
         }
 
         public int Id { get; set; }
