@@ -5,7 +5,7 @@
     "region"  : "us-west-2",
     "application" : "WSGOPLAY",
     "environment" : "WSGOPLAY-test",
-    "cname"       : "wsgoplay-test",
+    "cname"       : "wsgoplay-dev",
     "solution-stack" : "64bit Windows Server 2016 v2.5.6 running IIS 10.0",
     "environment-type" : "SingleInstance",
     "service-role"     : "aws-elasticbeanstalk-service-role",
@@ -14,5 +14,12 @@
     "key-pair"         : "",
     "iis-website"      : "Default Web Site",
     "app-path"         : "/",
-    "enable-xray"      : false
+    "enable-xray"      : false,
+    "configuration"    : "Debug",
+    "framework"        : "netcoreapp3.1",
+    "self-contained"   : false,
+    "enhanced-health-type" : "basic",
+    "additional-options"   : "",
+    "instance-profile"     : "aws-elasticbeanstalk-ec2-role",
+    "proxy-server"         : "nginx"
 }

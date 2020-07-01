@@ -21,7 +21,7 @@ namespace WSGOPLAY
         {
             Configuration = configuration;
         }
-        
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -35,7 +35,9 @@ namespace WSGOPLAY
             services.AddLogging();
             services.AddCors();
 
-            
+            services.AddControllers().AddNewtonsoftJson(options =>
+options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
             // REGISTRAMOS SWAGGER COMO SERVICIO
             services.AddOpenApiDocument(document =>
@@ -59,17 +61,14 @@ namespace WSGOPLAY
                     new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-            //services.AddControllers().AddNewtonsoftJson(options =>
-            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //);
-
             var connectionString1 = this.Configuration["ConnectionStrings:DefaultConnection"];
 
-         
+
             services.AddDbContextPool<goplayco_redContext>(options => options
                 .UseMySql(connectionString1)
             );
-            
+
+
 
         }
 
@@ -80,9 +79,6 @@ namespace WSGOPLAY
             {
                 app.UseDeveloperExceptionPage();
             }
-
-
-            
 
 
             app.UseCors(

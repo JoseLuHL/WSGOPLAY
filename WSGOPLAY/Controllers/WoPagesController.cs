@@ -107,37 +107,36 @@ namespace WSGOPLAY.Controllers
         }
 
         [HttpGet("pagina/horario/{id}/{fecha}")]
-        public async Task<ActionResult<WoPages>> GetWoPageshorario(string fecha = "01/01/2020", int id = 1)
+        public async Task<ActionResult<WoPages>> GetWoPageshorario(string fecha = "28/05/2020", int id = 1)
         {
             try
             {
-                //fecha = DateTime.Now.ToShortDateString();
-                var PG = await _context.WoPages
-                                .Include(horario => horario.Horario.Where(s => s.ProPrecio.Contains("5000"))).ToListAsync();
+                var r = await (from re in _context.Horario join ho in _context.Reserva on re.Id equals ho.Idhorario where re.IdCancha ==id select re ).ToListAsync();
 
-                //var cancha = _context.WoPages.Where(s => s.PageId.Equals(id));
-                //var horario = _context.Horario.Where(s => s.IdCancha.Equals(id));
-                //var sinreserva = _context.Sinreserva.Where(s => s.Sinidhorario.Equals(id));
-                //    var filteredBlogs = context.Blogs
-                //.Include(blog => blog.Posts.Where(post => post.BlogId == 1))
-                //    .ThenInclude(post => post.Author)
-                //.Include(blog => blog.Posts)
-                //    .ThenInclude(post => post.Tags.OrderBy(postTag => postTag.TagId).Skip(3))
-                //.ToList();
-                //var datos = await (from r in _context.Reserva 
-                //                   join ho in _context.Horario on r.Idhorario equals ho.Id
-                //                   join c in _context.WoPages on ho.IdCancha equals c.PageId
-                //                   where r.IdhorarioNavigation.IdCancha == id
-                //                   select new
-                //                   {
-                //                       c
-                //                   }
-                //                   ).ToListAsync();
-                if (PG == null)
+                if (r == null)
                 {
                     return null;
                 }
-                return Ok(PG);
+                return Ok(r);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+      
+        } 
+        [HttpGet("horario/{id}")]
+        public async Task<ActionResult<WoPages>> GetWoPageshorarioC( int id = 1)
+        {
+            try
+            {
+                //var r = await (from re in _context.Horario join ho in _context.Reserva on re.Id equals ho.Idhorario where re.IdCancha ==id select re ).ToListAsync();
+                var r = await _context.WoPages.Include(s => s.Horario).ThenInclude(s => s.Sinreserva).FirstAsync(s => s.PageId == id);
+                if (r == null)
+                {
+                    return null;
+                }
+                return Ok(r);
             }
             catch (Exception ex)
             {

@@ -5,11 +5,11 @@ namespace WSGOPLAY.Models
 {
     public partial class Horario
     {
-        public Horario()
-        {
-            Reserva = new HashSet<Reserva>();
-            Sinreserva = new HashSet<Sinreserva>();
-        }
+        //public Horario()
+        //{
+        //    Reserva = new HashSet<Reserva>();
+        //    Sinreserva = new HashSet<Sinreserva>();
+        //}
 
         public int Id { get; set; }
         public string ProNombre { get; set; }

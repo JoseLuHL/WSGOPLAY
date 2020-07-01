@@ -24,14 +24,34 @@ namespace WSGOPLAY.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Horario>>> GetHorario()
         {
-            return await _context.Horario.Include(s=>s.Reserva.Where(w => w.Idestado>=5)).ToListAsync();
+            var horario = await _context.Horario.Include(s => s.IdCanchaNavigation).Include(s => s.Sinreserva).ToListAsync();
+            if (horario == null)
+            {
+                return NotFound();
+            }
+
+            return horario;
+
         }
 
         // GET: api/Horarios/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Horario>> GetHorario(int id)
         {
-            var horario = await _context.Horario.FindAsync(id);
+            var horario = await _context.Horario.Include(s => s.IdCanchaNavigation).Include(s => s.Sinreserva).FirstOrDefaultAsync(s => s.Id == id);
+
+            if (horario == null)
+            {
+                return NotFound();
+            }
+
+            return horario;
+        }
+        // GET: api/Horarios/5
+        [HttpGet("cancha/{idCancha}")]
+        public async Task<ActionResult<IEnumerable<Horario>>> GetHorarioC(int idCancha)
+        {
+            var horario = await _context.Horario.Include(s => s.Sinreserva).Where(s => s.IdCancha == idCancha).ToListAsync();
 
             if (horario == null)
             {

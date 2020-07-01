@@ -24,14 +24,14 @@ namespace WSGOPLAY.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reserva>>> GetReserva()
         {
-            return await _context.Reserva.ToListAsync();
+            return await _context.Reserva.Include(s => s.IdestadoNavigation).ToListAsync();
         }
 
         // GET: api/Reservas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reserva>> GetReserva(int id)
         {
-            var reserva = await _context.Reserva.FindAsync(id);
+            var reserva = await _context.Reserva.Include(s => s.IdestadoNavigation).FirstAsync(s => s.IdReserva == id);
 
             if (reserva == null)
             {
@@ -40,6 +40,44 @@ namespace WSGOPLAY.Controllers
 
             return reserva;
         }
+        // GET: api/Reservas/5
+        [HttpGet("cancha/{idCancha}/{fecha}")]
+        public async Task<ActionResult<Reserva>> GetReservaC(int idCancha, string fecha)
+        {
+            //var reserva = await _context.Reserva.Include(s => s.IdestadoNavigation).Include(s => s.IdhorarioNavigation).ToListAsync();
+            var reserva = await (from re in _context.Horario 
+                                 join ho in _context.Reserva.Include(s=>s.IdestadoNavigation) 
+                                 on re.Id equals ho.Idhorario 
+                                 where re.IdCancha == idCancha && ho.Fecha.Substring(0, 9).Replace("/","").Replace("-", "").Trim().Equals(fecha) 
+                                 select ho).ToListAsync();
+            
+            if (reserva == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(reserva);
+        }
+
+
+        [HttpGet("horario/{idHorario}/{fecha}/{hora}")]
+        public async Task<ActionResult<Reserva>> GetReservaHF(int idHorario, string fecha,string hora)
+        {
+            //var reserva = await _context.Reserva.Include(s => s.IdestadoNavigation).Include(s => s.IdhorarioNavigation).ToListAsync();
+            var reserva = await (from re in _context.Horario
+                                 join ho in _context.Reserva.Include(s => s.IdestadoNavigation)
+                                 on re.Id equals ho.Idhorario
+                                 where ho.Idhorario == idHorario && ho.HoraInicio.Equals(hora) && ho.Fecha.Substring(0, 9).Replace("/", "").Replace("-", "").Trim().Equals(fecha) 
+                                 select ho).FirstAsync();
+
+            if (reserva == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(reserva);
+        }
+
 
         // PUT: api/Reservas/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
