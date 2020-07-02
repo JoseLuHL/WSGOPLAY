@@ -17,7 +17,15 @@ namespace WSGOPLAY.Models
         public int? IdCancha { get; set; }
 
         public virtual WoPages IdCanchaNavigation { get; set; }
-        public virtual ICollection<Reserva> Reserva { get; set; }
+        //public virtual ICollection<Reserva> Reserva { get; set; }
+        private  ICollection<Reserva> reserva;
+
+        public virtual ICollection<Reserva> Reserva
+        {
+            get { return null; }
+            set { reserva = value; }
+        }
+
         public virtual ICollection<Sinreserva> Sinreserva { get; set; }
     }
 }

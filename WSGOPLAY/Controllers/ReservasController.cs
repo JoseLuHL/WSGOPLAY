@@ -26,6 +26,18 @@ namespace WSGOPLAY.Controllers
         {
             return await _context.Reserva.Include(s => s.IdestadoNavigation).ToListAsync();
         }
+        [HttpGet("misreservas/{usuario}")]
+        public async Task<ActionResult<IEnumerable<Reserva>>>  GetReservaMisreservas(string usuario)
+        {
+
+            return await _context.Reserva
+                .Include(s => s.IdestadoNavigation)
+                .Include(s => s.IdhorarioNavigation.IdCanchaNavigation)
+                .Where(s => s.Usuario == usuario).ToListAsync();
+            
+            //var datos = await (from r in _context.Reserva join h in _context.Horario on r.)
+        
+        }
 
         // GET: api/Reservas/5
         [HttpGet("{id}")]
@@ -45,12 +57,12 @@ namespace WSGOPLAY.Controllers
         public async Task<ActionResult<Reserva>> GetReservaC(int idCancha, string fecha)
         {
             //var reserva = await _context.Reserva.Include(s => s.IdestadoNavigation).Include(s => s.IdhorarioNavigation).ToListAsync();
-            var reserva = await (from re in _context.Horario 
-                                 join ho in _context.Reserva.Include(s=>s.IdestadoNavigation) 
-                                 on re.Id equals ho.Idhorario 
-                                 where re.IdCancha == idCancha && ho.Fecha.Substring(0, 9).Replace("/","").Replace("-", "").Trim().Equals(fecha) 
+            var reserva = await (from re in _context.Horario
+                                 join ho in _context.Reserva.Include(s => s.IdestadoNavigation)
+                                 on re.Id equals ho.Idhorario
+                                 where re.IdCancha == idCancha && ho.Fecha.Substring(0, 9).Replace("/", "").Replace("-", "").Trim().Equals(fecha)
                                  select ho).ToListAsync();
-            
+
             if (reserva == null)
             {
                 return NotFound();
@@ -61,13 +73,13 @@ namespace WSGOPLAY.Controllers
 
 
         [HttpGet("horario/{idHorario}/{fecha}/{hora}")]
-        public async Task<ActionResult<Reserva>> GetReservaHF(int idHorario, string fecha,string hora)
+        public async Task<ActionResult<Reserva>> GetReservaHF(int idHorario, string fecha, string hora)
         {
             //var reserva = await _context.Reserva.Include(s => s.IdestadoNavigation).Include(s => s.IdhorarioNavigation).ToListAsync();
             var reserva = await (from re in _context.Horario
                                  join ho in _context.Reserva.Include(s => s.IdestadoNavigation)
                                  on re.Id equals ho.Idhorario
-                                 where ho.Idhorario == idHorario && ho.HoraInicio.Equals(hora) && ho.Fecha.Substring(0, 9).Replace("/", "").Replace("-", "").Trim().Equals(fecha) 
+                                 where ho.Idhorario == idHorario && ho.HoraInicio.Equals(hora) && ho.Fecha.Substring(0, 9).Replace("/", "").Replace("-", "").Trim().Equals(fecha)
                                  select ho).FirstAsync();
 
             if (reserva == null)
@@ -77,7 +89,6 @@ namespace WSGOPLAY.Controllers
 
             return Ok(reserva);
         }
-
 
         // PUT: api/Reservas/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -114,6 +125,7 @@ namespace WSGOPLAY.Controllers
         // POST: api/Reservas
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+
         [HttpPost]
         public async Task<ActionResult<Reserva>> PostReserva(Reserva reserva)
         {
